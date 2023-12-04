@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VM Pricing Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 20px;
+      background-color: #f8f9fa;
+      color: #343a40;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    h1 {
+      color: #007bff;
+      text-align: center;
+    }
+
+    form {
+      width: 400px;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="C:\Users\Izyan Umar\Documents\dcm\hispar.png" alt="Company Logo"> 
+  </header>
+
+  <h1>VM Pricing Calculator</h1>
+
+  <form>
+    <label for="vCores">Number of vCPUs:</label>
+    <input type="number" id="vCores" placeholder="Enter the number of vCPUs">
+
+    <label for="ram">Allocated RAM (GB):</label>
+    <input type="number" id="ram" placeholder="Enter allocated RAM in GB">
+
+    <label for="storage">Attached Storage (GB):</label>
+    <input type="number" id="storage" placeholder="Enter attached storage in GB">
+
+    <label for="storageType">Storage Type:</label>
+    <select id="storageType">
+      <option value="ssd">SSD</option>
+      <option value="non-ssd">Non-SSD</option>
+    </select>
+
+    <label for="networkInterface">Number of Network Interfaces:</label>
+    <input type="number" id="networkInterface" placeholder="Enter the number of network interfaces">
+
+    <label for="os">Operating System:</label>
+    <select id="os">
+      <option value="windows">Windows</option>
+      <option value="windows-server">Windows Server</option>
+      <option value="ubuntu">Ubuntu</option>
+      <option value="debian">Debian</option>
+      <option value="suse">SUSE Enterprise</option>
+      <option value="suse-sap">SUSE Enterprise for SAP Applications</option>
+      <option value="others">Others</option>
+    </select>
+
+    <label for="osLicenseCost">OS Licensing Cost:</label>
+    <input type="number" id="osLicenseCost" placeholder="Enter OS licensing cost">
+
+    <label for="backup">VM Backup:</label>
+    <select id="backup">
+      <option value="0">No</option>
+      <option value="1">Yes</option>
+    </select>
+
+    <button onclick="calculatePrice()">Calculate Price</button>
+  </form>
+
+  <p id="result"></p>
+
+  <script>
+    function calculatePrice() {
+      var vCores = parseFloat(document.getElementById("vCores").value) || 0;
+      var ram = parseFloat(document.getElementById("ram").value) || 0;
+      var storage = parseFloat(document.getElementById("storage").value) || 0;
+      var storageType = document.getElementById("storageType").value;
+      var networkInterface = parseFloat(document.getElementById("networkInterface").value) || 0;
+      var os = document.getElementById("os").value;
+      var osLicenseCost = parseFloat(document.getElementById("osLicenseCost").value) || 0;
+      var backup = parseFloat(document.getElementById("backup").value);
+
+      // Replace these fixed prices with your actual pricing logic
+      var vCorePrice = 20; // example price per vCPU
+      var ramPricePerGB = 5; // example price per GB of RAM
+      var ssdStoragePricePerGB = 2; // example price per GB of SSD storage
+      var nonSsdStoragePricePerGB = 1; // example price per GB of non-SSD storage
+      var networkInterfacePrice = 10; // example price per network interface
+      var backupPrice = 50; // example price for VM backup
+      var backupStoragePricePerGB = 1.5; // example price per GB of backup storage
+
+      // OS-specific pricing
+      var osPrices = {
+        windows: 100, // replace with your Windows OS pricing
+        'windows-server': 200, // replace with your Windows Server OS pricing
+        ubuntu: 50, // replace with your Ubuntu OS pricing
+        debian: 60, // replace with your Debian OS pricing
+        suse: 70, // replace with your SUSE Enterprise OS pricing
+        'suse-sap': 80, // replace with your SUSE Enterprise for SAP Applications OS pricing
+        others: 30 // replace with your pricing for other OS
+      };
+
+      var osLicenseCost = osPrices[os] || 0;
+
+      var storagePricePerGB = storageType === "ssd" ? ssdStoragePricePerGB : nonSsdStoragePricePerGB;
+
+      var totalServerPrice = (vCores * vCorePrice) + (ram * ramPricePerGB) + (storage * storagePricePerGB);
+      var totalNetworkPrice = networkInterface * networkInterfacePrice;
+      var totalBackupPrice = backup === 1 ? (storage * backupStoragePricePerGB) : 0;
+      var totalPrice = totalServerPrice + totalNetworkPrice + osLicenseCost + totalBackupPrice;
+
+      document.getElementById("result").innerText = "Total Price: $" + totalPrice.toFixed(2);
+    }
+  </script>
+</body>
+</html>
